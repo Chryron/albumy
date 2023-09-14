@@ -58,9 +58,10 @@ def fake_follow(count=30):
     db.session.commit()
 
 
-def fake_tag(count=20):
-    for i in range(count):
-        tag = Tag(name=fake.word())
+def real_tags():
+    classes = open('tagger_files/coco.names').read().strip().split('\n')
+    for tag_name in classes:
+        tag = Tag(name=tag_name)
         db.session.add(tag)
         try:
             db.session.commit()
@@ -76,7 +77,7 @@ def fake_photo(count=30):
 
         filename = 'random_%d.jpg' % i
         r = lambda: random.randint(128, 255)
-        img = Image.new(mode='RGB', size=(800, 800), color=(r(), r(), r()))
+        img = Image.new(mode='RGB', size=(416, 416), color=(r(), r(), r()))
         img.save(os.path.join(upload_path, filename))
 
         photo = Photo(
@@ -95,6 +96,26 @@ def fake_photo(count=30):
                 photo.tags.append(tag)
 
         db.session.add(photo)
+    db.session.commit()
+
+def real_photo():
+    # photos
+    
+    
+    print("real photo")
+    filename = 'horse.jpg'
+    
+
+    photo = Photo(
+        description=fake.text(),
+        filename=filename,
+        filename_m=filename,
+        filename_s=filename,
+        author=User.query.get(random.randint(1, User.query.count())),
+        timestamp=fake.date_time_this_year()
+    )
+
+    db.session.add(photo)
     db.session.commit()
 
 

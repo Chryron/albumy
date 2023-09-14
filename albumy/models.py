@@ -13,6 +13,8 @@ from flask_avatars import Identicon
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from sqlalchemy.exc import IntegrityError
+from albumy.tagger import extract_tags
 from albumy.extensions import db, whooshee
 
 # relationship table
@@ -239,7 +241,27 @@ class Photo(db.Model):
     comments = db.relationship('Comment', back_populates='photo', cascade='all')
     collectors = db.relationship('Collect', back_populates='collected', cascade='all')
     tags = db.relationship('Tag', secondary=tagging, back_populates='photos')
+        
 
+    def __init__(self, **kwargs):
+        super(Photo, self).__init__(**kwargs)
+        tags = extract_tags(self.filename)
+        print(tags)
+        for tag in tags:
+            tag = Tag.query.filter_by(name=tag).first()
+            if tag is None:
+                tag = Tag(name=tag)
+                db.session.add(tag)
+                try:
+                    db.session.commit()
+                except IntegrityError:
+                    db.session.rollback()
+                print("THIS SHOULDNT HAPPEN")
+
+            if tag not in self.tags:
+                self.tags.append(tag)
+
+                
 
 @whooshee.register_model('name')
 class Tag(db.Model):
