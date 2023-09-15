@@ -113,3 +113,8 @@ uploads/avatars/*
 !uploads/avatars/.gitkeep
 
 whooshee
+
+# opencv
+*.cfg
+*.weights
+*.names

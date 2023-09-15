@@ -28,6 +28,10 @@ or with Pipenv:
 $ pipenv install --dev
 $ pipenv shell
 ```
+install required model weights and config for CV tasks:
+```
+bash setup.sh
+```
 generate fake data then run:
 ```
 $ flask forge
