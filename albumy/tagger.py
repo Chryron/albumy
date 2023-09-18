@@ -28,9 +28,6 @@ def extract_tags(image_path: str):
     ln = [ln[i - 1] for i in net.getUnconnectedOutLayers()]
 
     # construct a blob from the image
-    # get dim from image
-    
-    
     blob = cv.dnn.blobFromImage(img, 1/255.0, (h, w), swapRB=True, crop=False)
     r = blob[0, 0, :, :]
 
