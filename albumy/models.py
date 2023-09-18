@@ -261,6 +261,22 @@ class Photo(db.Model):
             if tag not in self.tags:
                 self.tags.append(tag)
 
+        if self.description is None or self.description == '':
+            import openai
+            import os
+            from dotenv import load_dotenv
+            load_dotenv()
+
+            openai.api_key = os.getenv("OPENAI_API_KEY")
+            prompt = "Give a creative instagram caption for a photo containing the following objects:" + ", ".join(tags)
+            completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "system", "content": prompt}], temperature=0.9)
+            print(completion.choices[0].message.content)
+
+            self.description = completion.choices[0].message.content.replace('"', "")
+            
+
+            
+
                 
 
 @whooshee.register_model('name')

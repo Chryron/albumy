@@ -107,7 +107,6 @@ def real_photo():
     
 
     photo = Photo(
-        description=fake.text(),
         filename=filename,
         filename_m=filename,
         filename_s=filename,
